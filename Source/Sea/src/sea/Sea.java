@@ -74,7 +74,7 @@ public class Sea extends Application {
 
             @Override
             public void handle(MouseEvent event) {
-                dX = event.getX() - coordXReal.getValue();
+                dX = event.getSceneX() - coordXReal.getValue();
             }
         });
 
@@ -82,8 +82,8 @@ public class Sea extends Application {
 
             @Override
             public void handle(MouseEvent event) {
-                if ((event.getX() - dX) <= 0 && (event.getX() - dX) >= -1100) {
-                    coordXReal.set(event.getX() - dX);
+                if ((event.getSceneX() - dX) <= 0 && (event.getSceneX() - dX) >= -1100) {
+                    coordXReal.set(event.getSceneX() - dX);
                 }
             }
         });
