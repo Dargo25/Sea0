@@ -13,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -35,6 +36,8 @@ public class Sea extends Application {
     private double dX = 0.0;
     private DoubleProperty coordXReal = new SimpleDoubleProperty(0.0);
     private FadeTransition sea1Fade;
+    private double dX1 = 0.0;
+    private DoubleProperty coordXReal1 = new SimpleDoubleProperty(0.0);
 
     @Override
     public void start(Stage primaryStage) { //Main container
@@ -53,10 +56,11 @@ public class Sea extends Application {
         sea1Clip.setArcHeight(30);
         sea0.setClip(sea0Clip);
         sea1.setClip(sea1Clip);
-        
+
         setTransition();
         setReset();
         sea0Drag();
+        sea1Drag();
         setExit();
 
         Pane root = new Pane();
@@ -82,7 +86,7 @@ public class Sea extends Application {
                 sea1Fade.play();
             }
         });
-        
+
         sea1.setOnMouseExited(new EventHandler<MouseEvent>() {
 
             @Override
@@ -104,6 +108,13 @@ public class Sea extends Application {
             @Override
             public void handle(MouseEvent event) {
                 coordXReal.set(0.0);
+            }
+        });
+        reset.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+
+            @Override
+            public void handle(ContextMenuEvent event) {
+                coordXReal1.set(0.0);
             }
         });
     }
@@ -129,6 +140,25 @@ public class Sea extends Application {
         sea0.xProperty().bind(coordXReal);
     }
 
+    private void sea1Drag() {
+        sea1.setOnMousePressed(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                dX1 = event.getSceneX() - coordXReal1.getValue();
+            }
+        });
+
+        sea1.setOnMouseDragged(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                coordXReal1.set(event.getSceneX() - dX1);
+            }
+        });
+        sea1.xProperty().bind(coordXReal1);
+    }
+
     private void setExit() {
         exit = new ImageView(new Image(Sea.class.getResourceAsStream("images/exit.png")));
         exit.setFitHeight(45);
@@ -151,5 +181,4 @@ public class Sea extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 }
