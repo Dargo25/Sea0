@@ -5,6 +5,7 @@
  */
 package sea;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -17,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 /**
  *
@@ -25,33 +27,70 @@ import javafx.stage.StageStyle;
 public class Sea extends Application {
 
     private ImageView sea0;
+    private ImageView sea1;
     private ImageView reset;
     private Rectangle sea0Clip;
+    private Rectangle sea1Clip;
     private ImageView exit;
     private double dX = 0.0;
     private DoubleProperty coordXReal = new SimpleDoubleProperty(0.0);
+    private FadeTransition sea1Fade;
 
     @Override
     public void start(Stage primaryStage) { //Main container
         primaryStage.initStyle(StageStyle.TRANSPARENT);
 
         sea0 = new ImageView(new Image(Sea.class.getResourceAsStream("images/sea0.jpg")));
+        sea1 = new ImageView(new Image(Sea.class.getResourceAsStream("images/sea1.jpg")));
+        sea1.setFitHeight(360);
+        sea1.setFitWidth(569);
+        sea1.setOpacity(0.0);
         sea0Clip = new Rectangle(450, 360);
         sea0Clip.setArcWidth(30);
         sea0Clip.setArcHeight(30);
+        sea1Clip = new Rectangle(450, 360);
+        sea1Clip.setArcWidth(30);
+        sea1Clip.setArcHeight(30);
         sea0.setClip(sea0Clip);
-
+        sea1.setClip(sea1Clip);
+        
+        setTransition();
         setReset();
         sea0Drag();
         setExit();
 
         Pane root = new Pane();
-        root.getChildren().addAll(sea0, exit, reset);
+        root.getChildren().addAll(sea0, sea1, exit, reset);
 
         Scene scene = new Scene(root, 450, 360); //Drawing surface
         scene.setFill(null);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void setTransition() {
+        sea1Fade = new FadeTransition(Duration.seconds(1));
+        sea1Fade.setFromValue(0);
+        sea1Fade.setToValue(1);
+        sea1Fade.setNode(sea1);
+
+        sea1.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                sea1Fade.setRate(1);
+                sea1Fade.play();
+            }
+        });
+        
+        sea1.setOnMouseExited(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                sea1Fade.setRate(-1);
+                sea1Fade.play();
+            }
+        });
     }
 
     private void setReset() {
